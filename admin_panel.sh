@@ -1,3 +1,4 @@
+
 SERIAL=5602900
 KEY=llSumWUv2e
 VER=7.5.2
@@ -12,7 +13,7 @@ pwd="$PWD"
 
 # Script name
 if [ "$0" = "--" ] || [ -z "$0" ]; then
-  script_name="virtualmin-install.sh"
+  script_name="Admin_panel.sh"
 else
   script_name=$(basename -- "$0")
 fi
@@ -28,31 +29,26 @@ skipyesno=0
 usage() {
   # shellcheck disable=SC2046
   echo
-  printf "Usage: %s [options]\\n" "$(basename "$0")"
-  echo
-  echo "  If called without arguments, installs Virtualmin with default options."
-  echo
-  printf "  --bundle|-b <LAMP|LEMP>  choose bundle to install (defaults to LAMP)\\n"
-  printf "  --minimal|-m             install a minimal package set for low-memory systems\\n"
-  printf "  --unstable|-e            enable Grade B system support (see documentation)\\n"
-  printf "  --module|-o              source custom shell module in post-install phase\\n"
-  echo
-  printf "  --hostname|-n            force hostname during installation\\n"
-  printf "  --no-package-updates|-x  skip package updates during installation\\n"
-  echo
-  printf "  --setup|-s               reconfigure Virtualmin repos without installation\\n"
-  printf "  --connect|-C <ipv4|ipv6> test connectivity to the repos without installation\\n"
-  echo
-  printf "  --insecure-downloads|-i  skip SSL certificate check for remote downloads\\n"
-  echo
-  printf "  --uninstall|-u           remove all Virtualmin packages and dependencies\\n"
-  echo
-  printf "  --force|-f|--yes|-y      assume \"yes\" to all prompts\\n"
-  printf "  --force-reinstall|-fr    force reinstall Virtualmin (not recommended)\\n"
-  printf "  --no-banner|-nb          suppress installation messages and warnings\\n"
-  printf "  --verbose|-v             enable verbose mode\\n"
-  printf "  --version|-V             show installer version\\n"
-  printf "  --help|-h                show this help\\n"
+    printf "Использование: %s [опции]\n" "$(basename "$0")"
+    echo
+    echo "Если запустить без параметров — установка Virtualmin с настройками по умолчанию."
+    echo
+    printf " --bundle|-b <LAMP|LEMP>     выбрать стек (по умолчанию LAMP)\n"
+    printf " --minimal|-m               минимальная установка (для систем с малой ОЗУ)\n"
+    printf " --unstable|-e              включить поддержку Grade B систем\n"
+    printf " --module|-o <file.sh>      подключить свой модуль после установки\n"
+    printf " --hostname|-n <host>       задать имя хоста принудительно\n"
+    printf " --no-package-updates|-x    не обновлять пакеты перед установкой\n"
+    printf " --setup|-s                 только настроить репозитории (без установки)\n"
+    printf " --connect|-C <ipv4|ipv6>   проверить подключение к репозиториям\n"
+    printf " --insecure-downloads|-i    не проверять SSL при загрузке\n"
+    printf " --uninstall|-u             удалить Virtualmin полностью\n"
+    printf " --force|-f|--yes|-y        отвечать «да» на все вопросы\n"
+    printf " --force-reinstall|-fr      принудительная переустановка (не рекомендуется)\n"
+    printf " --no-banner|-nb            не показывать приветствия и предупреждения\n"
+    printf " --verbose|-v               подробный вывод\n"
+    printf " --version|-V               показать версию установщика\n"
+    printf " --help|-h                  показать эту справку\n"
   echo
 }
 
@@ -397,7 +393,7 @@ goto_tmpdir
 
 pre_check_http_client() {
   # Check for wget or curl or fetch
-  printf "Checking for HTTP client .." >>"$log"
+  printf "Проверка HTTP-клиента .." >>"$log"
   while true; do
     if [ -x "/usr/bin/wget" ]; then
       download="/usr/bin/wget -nv$insecure_download_wget_flag"
@@ -478,7 +474,7 @@ get_distro
 # Check the serial number and key
 serial_ok "$SERIAL" "$KEY"
 # Setup slog
-LOG_PATH="$log"
+LOG_PATH="Admin_panel.log"
 # Setup run_ok
 RUN_LOG="$log"
 # Exit on any failure during shell stage
@@ -502,9 +498,9 @@ fi
 if [ -n "$setup_only" ]; then
   log_info "Setup log is written to $LOG_PATH"
 elif [ "$mode" = "uninstall" ]; then
-  log_info "Uninstallation log is written to $LOG_PATH"
+  log_info "Журнал удаления записывается в $LOG_PATH"
 else
-  log_info "Installation log is written to $LOG_PATH"
+  log_info "Журнал установки записывается в $LOG_PATH"
 fi
 log_debug "LOG_ERRORS_FATAL=$RUN_ERRORS_FATAL"
 log_debug "LOG_LEVEL_STDOUT=$LOG_LEVEL_STDOUT"
@@ -735,8 +731,8 @@ phase() {
     for i in $(seq $(( phase_number + 1 )) "$phases_total"); do
         printf "${CYAN}◻"
     done
-    log_debug "Phase ${phase_number} of ${phases_total}: ${phase_description}"
-    printf "${NORMAL} Phase ${YELLOW}${phase_number}${NORMAL} of ${GREEN}${phases_total}${NORMAL}: ${phase_description}\\n"
+    log_debug "Этап ${phase_number} of ${phases_total}: ${phase_description}"
+    printf "${NORMAL} Этап ${YELLOW}${phase_number}${NORMAL} of ${GREEN}${phases_total}${NORMAL}: ${phase_description}\\n"
 }
 
 if [ "$mode" = "uninstall" ]; then
@@ -765,13 +761,13 @@ install_msg() {
 
   cat <<EOF
 
-  Welcome to the Virtualmin ${GREEN}$PRODUCT${NORMAL} installer, version ${GREEN}$VER${NORMAL}
+  Добро пожаловать в Admin_panel ${GREEN}$PRODUCT${NORMAL} установщик, версия ${GREEN}$VER${NORMAL}
 
-  This script must be run on a freshly installed supported OS. It does not
-  perform updates or upgrades (use your system package manager) or license
-  changes (use the "virtualmin change-license" command).
+  Этот сценарий необходимо запускать на только что установленной поддерживаемой ОС. Это не
+  выполнять обновления или обновления (используйте диспетчер системных пакетов) или лицензировать
+  изменения (используйте команду Admin_panel-license»).
 
-  The systems currently supported by the install script are:
+  В настоящее время скрипт установки поддерживает следующие системы:
 
 EOF
   supported_all=$supported
@@ -794,24 +790,21 @@ EOF
   fi
   echo "$supported_all"
   cat <<EOF
-  If your OS/version/arch is not listed, installation ${BOLD}${RED}will fail${NORMAL}. More
-  details about the systems supported by the script can be found here:
+  Если вашей ОС/версии/архива нет в списке, установка ${BOLD}${RED}потерпит неудачу${NORMAL}
 
-    ${UNDERLINE}https://www.virtualmin.com/os-support${NORMAL}
-
-  The selected package bundle is ${CYAN}${bundle}${NORMAL} and the size of install is
-  ${CYAN}${mode}${NORMAL}. It will require up to ${CYAN}${disk_space_required} GB${NORMAL} of disk space.
+  Выбранный пакет пакетов ${CYAN}${bundle}${NORMAL} и размер установки
+  ${CYAN}${mode}${NORMAL}. Iпотребуется до ${CYAN}${disk_space_required} GB${NORMAL} дискового пространства.
 
 EOF
 
   if [ "$skipyesno" -ne 1 ]; then
   cat <<EOF
-  Exit and re-run this script with ${CYAN}--help${NORMAL} flag to see available options.
+  Выйдите и перезапустите этот скрипт с помощью ${CYAN}--help${NORMAL} отметьте, чтобы увидеть доступные варианты.
 
 EOF
   fi
   if [ "$skipyesno" -ne 1 ]; then
-    printf " Continue? (y/n) "
+    printf " Продолжать? (y/n) "
     if ! yesno; then
       exit
     fi
@@ -826,19 +819,19 @@ os_unstable_pre_check() {
   if [ -n "$unstable" ]; then
     cat <<EOF
 
-  ${YELLOWBG}${BLACK}${BOLD} INSTALLATION WARNING! ${NORMAL}
+  ${YELLOWBG}${BLACK}${BOLD} ПРЕДУПРЕЖДЕНИЕ ПО УСТАНОВКЕ! ${NORMAL}
 
-  You are about to install Virtualmin $PRODUCT on a ${BOLD}Grade B${NORMAL} operating
-  system. Be advised that this OS version is not recommended for servers,
-  and may have bugs that could affect the performance and stability of
-  the system.
+  Вы собираетесь установить Admin_panel $PRODUCT на ${BOLD}Оценка Б${NORMAL} действующий
+  система. Имейте в виду, что эта версия ОС не рекомендуется для серверов.
+  и могут содержать ошибки, которые могут повлиять на производительность и стабильность
+  система.
 
-  Certain features may not work as intended or might be unavailable on
-  this OS.
+  Некоторые функции могут работать не так, как задумано, или могут быть недоступны на
+  эта ОС.
 
 EOF
     if [ "$skipyesno" -ne 1 ]; then
-      printf " Continue? (y/n) "
+      printf " Продолжать? (y/n) "
       if ! yesno; then
         exit
       fi
@@ -852,19 +845,19 @@ preconfigured_system_msg() {
   if [ -n "$is_preconfigured_rs" ]; then
     cat <<EOF
 
-  ${WHITEBG}${RED}${BOLD} ATTENTION! ${NORMAL}
+  ${WHITEBG}${RED}${BOLD} ВНИМАНИЕ! ${NORMAL}
 
-  Pre-installed software detected: $is_preconfigured_rs
+  Обнаружено предустановленное программное обеспечение: $is_preconfigured_rs
 
-  It is highly advised ${BOLD}${RED}not to pre-install${NORMAL} any additional packages on your
-  OS. The installer expects a freshly installed OS, and anything you do
-  differently might cause conflicts or configuration errors. If you need
-  to enable third-party package repositories, do so after installation
-  of Virtualmin, and only with extreme caution.
+  Это очень рекомендуется ${BOLD}${RED}не предустанавливать${NORMAL} любые дополнительные пакеты на вашем
+  ОС. Установщик ожидает только что установленную ОС, и все, что вы делаете
+  в противном случае это может привести к конфликтам или ошибкам конфигурации. Если вам нужно
+  чтобы включить сторонние репозитории пакетов, сделайте это после установки
+  Admin_panel и только с особой осторожностью..
 
 EOF
     if [ "$skipyesno" -ne 1 ]; then
-      printf " Continue? (y/n) "
+      printf " Продолжать? (y/n) "
       if ! yesno; then
         exit
       fi
@@ -877,27 +870,27 @@ already_installed_msg() {
   if is_installed; then
     cat <<EOF
 
-  ${WHITEBG}${RED}${BOLD} WARNING! ${NORMAL}
+  ${WHITEBG}${RED}${BOLD} ПРЕДУПРЕЖДЕНИЕ! ${NORMAL}
 
-  Virtualmin may already be installed. This can happen if an installation
-  failed, and can be ignored in that case.
+  Admin_panel может быть уже установлен. Это может произойти, если установка
+  не удалась, и может быть проигнорирована в этом случае.
 
-  However, if Virtualmin has already been successfully installed you
-  ${BOLD}${RED}must not${NORMAL} run this script again! It will cause breakage to your
-  existing configuration.
+  Однако, если Admin_panel уже был успешно установлен вы
+  ${BOLD}${RED}не должен${NORMAL} запустите этот скрипт еще раз! Это приведет к поломке вашего
+  существующая конфигурация.
 
-  Virtualmin repositories can be fixed using ${WHITEBG}${BLACK}${BOLD}$script_name --setup${NORMAL}
-  command.
+  Admin_panel репозитории можно исправить с помощью ${WHITEBG}${BLACK}${BOLD}$script_name --setup${NORMAL}
+  команд.
 
-  License can be changed using ${WHITEBG}${BLACK}${BOLD}virtualmin change-license${NORMAL} command.
-  Changing the license never requires re-installation.
+  Лицензию можно изменить с помощью ${WHITEBG}${BLACK}${BOLD}Admin_panel изменить лицензию${NORMAL} команда.
+  Изменение лицензии никогда не требует переустановки.
 
-  Updates and upgrades must be performed from within either Virtualmin or
-  using system package manager on the command line.
+  Обновления и обновления должны выполняться либо из панели администратора, либо из панели администратора.
+  использование системного менеджера пакетов в командной строке.
 
 EOF
     if [ "$skipyesno" -ne 1 ]; then
-      printf " Continue? (y/n) "
+      printf " Продолжать? (y/n) "
       if ! yesno; then
         exit
       fi
@@ -907,7 +900,7 @@ EOF
 
 post_install_message() {
   log_success "Installation Complete!"
-  log_success "If there were no errors above, Virtualmin should be ready"
+  log_success "If there were no errors above, Admin_panel should be ready"
   log_success "to configure at https://${hostname}:10000 (or https://${address}:10000)."
   if [ -z "$ssl_host_success" ]; then
     log_success "You may receive a security warning in your browser on your first visit."
@@ -983,7 +976,7 @@ pre_check_system_time() {
 }
 
 pre_check_ca_certificates() {
-  printf "Checking for an update for a set of CA certificates ..\\n" >>"$log"
+  printf "Проверка наличия обновлений для набора сертификатов CA ..\\n" >>"$log"
   if [ -x /usr/bin/dnf ]; then
     dnf -y update ca-certificates >>"$log" 2>&1
   elif [ -x /usr/bin/yum ]; then
@@ -997,7 +990,7 @@ pre_check_ca_certificates() {
 }
 
 pre_check_perl() {
-  printf "Checking for Perl .." >>"$log"
+  printf "Проверка Perl .." >>"$log"
   # loop until we've got a Perl or until we can't try any more
   while true; do
     perl="$(command -pv perl 2>/dev/null)"
@@ -1036,7 +1029,7 @@ pre_check_perl() {
 
 pre_check_gpg() {
   if [ -x /usr/bin/apt-get ]; then
-    printf "Checking for GPG .." >>"$log"
+    printf "Проверка GPG .." >>"$log"
     if [ ! -x /usr/bin/gpg ]; then
       printf " not found, attempting to install .." >>"$log"
       apt-get update >>/dev/null
@@ -1052,23 +1045,22 @@ pre_check_all() {
   
   if [ -z "$setup_only" ]; then
     # Check system time
-    run_ok pre_check_system_time "Checking system time"
+    run_ok pre_check_system_time "Проверка системного времени"
     
     # Make sure Perl is installed
-    run_ok pre_check_perl "Checking Perl installation"
+    run_ok pre_check_perl "Проверка установки Perl"
 
     # Update CA certificates package
-    run_ok pre_check_ca_certificates "Checking CA certificates package"
+    run_ok pre_check_ca_certificates "Проверка пакета сертификатов CA"
   else
     # Make sure Perl is installed
-    run_ok pre_check_perl "Checking Perl installation"
+    run_ok pre_check_perl "Проверка установки Perl"
   fi
 
   # Checking for HTTP client
-  run_ok pre_check_http_client "Checking HTTP client"
-
+  run_ok pre_check_http_client "Проверка HTTP клиента"
   # Check for gpg, debian 10 doesn't install by default!?
-  run_ok pre_check_gpg "Checking GPG package"
+  run_ok pre_check_gpg "Проверка пакета GPG"
 }
 
 # download()
@@ -1117,11 +1109,11 @@ fi
 # Print out some details that we gather before logging existed
 log_debug "Install mode: $mode"
 log_debug "Product: Virtualmin $PRODUCT"
-log_debug "virtualmin-install.sh version: $VER"
+log_debug "Admin_panel.sh version: $VER"
 
 # Check for a fully qualified hostname
 if [ -z "$setup_only" ]; then
-  log_debug "Checking for fully qualified hostname .."
+  log_debug "Проверка полного имени хоста .."
   name="$(hostname -f)"
   if [ $? -ne 0 ]; then
     name=$(hostnamectl --static)
@@ -1237,7 +1229,7 @@ install_virtualmin_release() {
 
     # Download release file
     rpm_release_file_download="virtualmin-$packagetype-release.noarch.rpm"
-    download "https://${LOGIN}$download_virtualmin_host/vm/$vm_version/rpm/$rpm_release_file_download" "Downloading Virtualmin $vm_version release package"
+    download "https://${LOGIN}$download_virtualmin_host/vm/$vm_version/rpm/$rpm_release_file_download" "Загрузка Admin_panel $vm_version release package"
     
     # Remove existing pkg files as they will not
     # be replaced upon replease package upgrade
@@ -1256,7 +1248,7 @@ install_virtualmin_release() {
     rpm -e --nodeps --quiet "$(rpm -qa virtualmin*release 2>/dev/null)" >> "$RUN_LOG" 2>&1
 
     # Install release file
-    run_ok "rpm -U --replacepkgs --replacefiles --quiet $rpm_release_file_download" "Installing Virtualmin $vm_version release package"
+    run_ok "rpm -U --replacepkgs --replacefiles --quiet $rpm_release_file_download" "Установка Admin_panel $vm_version release package"
 
     # Fix login credentials if fixing repos
     if [ -n "$setup_only" ]; then
@@ -1328,7 +1320,7 @@ install_virtualmin_release() {
     log_debug "Installing Webmin and Virtualmin package signing keys .."
     download "https://$download_virtualmin_host_lib/RPM-GPG-KEY-virtualmin-$vm_version" "Downloading Virtualmin $vm_version key"
     run_ok "gpg --import RPM-GPG-KEY-virtualmin-$vm_version && cat RPM-GPG-KEY-virtualmin-$vm_version | gpg --dearmor > /usr/share/keyrings/$repoid_debian_like-virtualmin-$vm_version.gpg" "Installing Virtualmin $vm_version key"
-    run_ok "apt-get update" "Downloading repository metadata"
+    run_ok "apt-get update" "Загрузка метаданных репозитория"
     # Make sure universe repos are available
     # XXX Test to make sure this run_ok syntax works as expected (with single quotes inside double)
     if [ "$os_type" = "ubuntu" ]; then
@@ -1377,7 +1369,7 @@ fi
 install_with_apt() {
   # Install system package upgrades, if any
   if [ -z "$noupdates" ]; then
-    run_ok "$upgrade" "Checking and installing system package updates"
+    run_ok "$upgrade" "Проверка и установка обновлений системных пакетов"
   fi
 
   # Silently purge packages that may cause issues upon installation
@@ -1470,7 +1462,7 @@ install_with_yum() {
 
   # Upgrade system packages first
   if [ -z "$noupdates" ]; then
-    run_ok "$upgrade" "Checking and installing system package updates"
+    run_ok "$upgrade" "Проверка и установка обновлений системных пакетов"
   fi
 
   # Install custom stack packages
